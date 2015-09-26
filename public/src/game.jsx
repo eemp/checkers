@@ -12,7 +12,6 @@ var Game = module.exports = React.createClass({
         var self = this;
         socket.emit(event_constants.GET_BOARD, this.props.params.id);
         socket.on(event_constants.BOARD_DATA, function(board) {
-            console.log(board);
             self.setState({data : board});
         });
     },
