@@ -1,0 +1,51 @@
+/* layout */
+.game-board-container {
+    margin-top: 8vh;
+}
+
+.game-board {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.game-board tr {
+    height : 10vh;
+}
+
+.game-board td {
+    width : 10vh;
+    border : 3px solid #000;
+}
+
+/* dark squares */
+td.dark {
+    background-color: #000;
+    font-size: 8vh;
+    text-align: center;
+}
+
+/* pieces */
+.piece-1:before {
+    content: "\26C2";
+}
+
+.piece-2:before {
+    content: "\26C0";
+}
+
+.piece-3:before {
+    content: "\26C3";
+}
+
+.piece-4:before {
+    content: "\26C1";
+}
+
+.player-1 {
+    color: #f00;
+}
+
+.player-2 {
+    color: #00f;
+}
+
