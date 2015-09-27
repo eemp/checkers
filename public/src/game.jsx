@@ -12,6 +12,7 @@ var Game = module.exports = React.createClass({
         var self = this;
         socket.emit(event_constants.GET_BOARD, this.props.params.id);
         socket.on(event_constants.BOARD_DATA, function(board) {
+            console.log(board);
             self.setState({data : board});
         });
     },
@@ -28,8 +29,8 @@ var Game = module.exports = React.createClass({
                 var classes = [ is_dark ? 'dark' : 'light' ];
                 var occupant = null;
 
-                if(is_dark && self.state.data && self.state.data[r][Math.floor(c/2)] != board_constants.EMPTY)
-                    occupant = self.state.data[r][Math.floor(c/2)];
+                if(is_dark && self.state.data && self.state.data[r][c] != board_constants.EMPTY)
+                    occupant = self.state.data[r][c];
 
                 if(occupant) {
                     var player = occupant % 2 == 0 ? 2 : 1;
