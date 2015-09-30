@@ -8,19 +8,34 @@ var Game = module.exports = React.createClass({
             current_turn : 0,
         };
     },
+    getLHash : function(x, y) {
+        return [x, y].join(',');
+    },
     componentDidMount : function() {
         var self = this;
         socket.emit(event_constants.GET_BOARD, this.props.params.id);
         socket.on(event_constants.BOARD_DATA, function(board) {
-            console.log(board);
             self.setState({data : board});
         });
+        socket.on(event_constants.AVAIL_MOVES, function(moves) {
+            var hlmoves = {};
+            for(var k = 0; k < moves.length; k++) {
+                hlmoves[self.getLHash(moves[k]._to[0], moves[k]._to[1])] = true;
+            }
+            self.setState({highlighted_locs : hlmoves});
+        });
+    },
+    cellClickHandler : function(e) {
+        var x = parseInt(e.target.getAttribute('data-x'), 10);
+        var y = parseInt(e.target.getAttribute('data-y'), 10);
+        socket.emit(event_constants.GET_MOVES, { game_id : this.props.params.id, x : x, y : y });
     },
     render : function() {
         var self = this;
         var current_turn = self.state.current_turn;
+        var hlmoves = self.state.highlighted_locs;
         var rows = [];
-        
+
         for(var r = 0; r < 8; r++) {
             var is_first_sq_dark = (r % 2 == 1);
             var cols = [];
@@ -28,6 +43,7 @@ var Game = module.exports = React.createClass({
                 var is_dark = (c % 2 == (is_first_sq_dark ? 0 : 1));
                 var classes = [ is_dark ? 'dark' : 'light' ];
                 var occupant = null;
+                var is_highlight = hlmoves[self.getLHash(c, r)];
 
                 if(is_dark && self.state.data && self.state.data[r][c] != board_constants.EMPTY)
                     occupant = self.state.data[r][c];
@@ -37,9 +53,16 @@ var Game = module.exports = React.createClass({
                     classes.push("piece-" + occupant);
                     classes.push("player-" + player);
                 }
+                else if(is_highlight) {
+                    classes = [ 'move-highlight' ];
+                }
 
                 cols.push(
-                    <td key={[current_turn, r, c].join('-')} className={classes.join(' ')}>
+                    <td key={[current_turn, r, c].join('-')}
+                        className={classes.join(' ')}
+                        data-x={c}
+                        data-y={r}
+                        onClick={self.cellClickHandler}>
                     </td>
                 );
             }

@@ -12,6 +12,7 @@ GameEvents.prototype.group_events = function() {
     
     events[constants.NEW_GAME] = self.new_game_handler;
     events[constants.GET_BOARD] = self.get_board_handler;
+    events[constants.GET_MOVES] = self.get_moves_handler;
 
     return events;
 }
@@ -32,5 +33,15 @@ GameEvents.prototype.get_board_handler = function(socket, gameId) {
     debug("send board for game #", gameId);
 
     socket.emit(constants.BOARD_DATA, game ? game.board() : null);
+}
+
+GameEvents.prototype.get_moves_handler = function(socket, data) {
+    var gameId = data.game_id;
+    var game = games[gameId];
+    var moves = game.get_available_moves_from_stp(data.x, data.y);
+    
+    debug("send available moves ", { given : data, moves : moves });
+
+    socket.emit(constants.AVAIL_MOVES, moves);
 }
 

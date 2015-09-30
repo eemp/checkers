@@ -49,3 +49,8 @@ td.dark {
     color: #00f;
 }
 
+/* move highlights */
+.move-highlight {
+    background-color: #5aa;
+}
+
