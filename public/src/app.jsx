@@ -13,7 +13,10 @@ var App = React.createClass({
     mixins : [Navigation],
     componentDidMount : function() {
         var self = this;
-        socket.emit(event_constants.NEW_GAME);
+
+        if(!window.location.hash || window.location.hash.indexOf("games") == -1)
+            socket.emit(event_constants.NEW_GAME);
+        
         socket.on(event_constants.GAME_ID, function(game_id) {
             self.transitionTo('game', { id : game_id });
         });

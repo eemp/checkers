@@ -25,6 +25,7 @@ GameEvents.prototype.new_game_handler = function(socket) {
     
     games.push(new Game());
 
+    socket.join(constants.GAME_ID);
     socket.emit(constants.GAME_ID, gameId);
 }
 
@@ -33,6 +34,8 @@ GameEvents.prototype.get_board_handler = function(socket, gameId) {
     
     debug("send board for game #", gameId);
 
+    socket.join(gameId); // allow users to directly join game via copy paste url - ensure they are joined
+    socket.to(gameId).emit(constants.BOARD_DATA, game ? game.board() : null);
     socket.emit(constants.BOARD_DATA, game ? game.board() : null);
 }
 
@@ -43,6 +46,7 @@ GameEvents.prototype.get_moves_handler = function(socket, data) {
     
     debug("send available moves ", { given : data, moves : moves });
 
+    socket.to(gameId).emit(constants.AVAIL_MOVES, moves);
     socket.emit(constants.AVAIL_MOVES, moves);
 }
 
