@@ -5,8 +5,38 @@ var io = require('socket.io')(server);
 var routes = require('./routes.js');
 var events = require('./events.js'); // socket events
 var debug = require('debug')('checkers:app');
+var fs = require('fs');
+var Game = require('./lib/game.js');
 
 global.games = [];
+
+// add a set of debug games - TODO: remove
+function parseGameFileString(str) {
+    var lines = str.split(/\r?\n/);
+    var board = [];
+    var turn;
+
+    for(var k = 0; k < 8; k++){
+        board.push(lines[k].trim().split(/\s+/));
+    }
+    turn = parseInt(lines[8], 10);
+
+    return { board : board, turn : turn };
+}
+
+for(var k = 1; k <= 10; k++) {
+    var gamefile = "data/sampleCheckers" + k + ".txt";
+    fs.readFile(gamefile, 'utf8', function(err, data) {
+        if(err) console.error("Received an error while attempting to read file: ", { file : gamefile, err : err });
+        else{
+            var gdata = parseGameFileString(data);
+            var boardData = gdata.board;
+            var turn = gdata.turn;
+            games.push(new Game(boardData, turn));
+        }
+    });
+}
+
 
 // register middleware if any
 
