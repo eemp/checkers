@@ -13,6 +13,7 @@ GameEvents.prototype.group_events = function() {
     events[constants.NEW_GAME] = self.new_game_handler;
     events[constants.GET_BOARD] = self.get_board_handler;
     events[constants.GET_MOVES] = self.get_moves_handler;
+    events[constants.MAKE_MOVE] = self.make_move_handler;
 
     return events;
 }
@@ -43,5 +44,16 @@ GameEvents.prototype.get_moves_handler = function(socket, data) {
     debug("send available moves ", { given : data, moves : moves });
 
     socket.emit(constants.AVAIL_MOVES, moves);
+}
+
+GameEvents.prototype.make_move_handler = function(socket, data) {
+    var gameId = data.game_id;
+    var game = games[gameId];
+    
+    debug("applying a move ", data);
+
+    game.apply_move(data.move);
+    
+    this.get_board_handler(socket, gameId);
 }
 

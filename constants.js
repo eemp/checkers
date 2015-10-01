@@ -5,6 +5,7 @@ module.exports = {
             NEW_GAME    : "ng",
             GET_BOARD   : "gb",
             GET_MOVES   : "gm",
+            MAKE_MOVE   : "mm",
 
             // server will emit these
             GAME_ID     : "gi",
