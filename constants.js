@@ -19,7 +19,7 @@ module.exports = {
         },
         turn : {
             P1          : 1,
-            p2          : 2,
+            P2          : 2,
         },
         board : {
             occupants : {
