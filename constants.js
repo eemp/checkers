@@ -16,6 +16,7 @@ module.exports = {
     game : {
         status : {
             STARTED     : 0,
+            ENDED       : 1,
         },
         turn : {
             P1          : 1,

@@ -40,8 +40,25 @@ var Game = module.exports = React.createClass({
         }
         else if(hlmoves) {
             var move = hlmoves[self.getLHash(x, y)];
-            if(move) socket.emit(event_constants.MAKE_MOVE, 
-                { game_id : this.props.params.id, move : move });
+            if(move) {
+                socket.emit(event_constants.MAKE_MOVE, {
+                    game_id : this.props.params.id,
+                    move : move
+                });
+
+                /* apply the move to FE - server may take a while to get back */
+                var from = move._from;
+                var to = move._to;
+                var jump = move._jump;
+                var piece = board[from[1]][from[0]];
+                
+                board[from[1]][from[0]] = board_constants.EMPTY;
+                board[to[1]][to[0]] = piece;
+
+                if(jump) board[jump[1]][jump[0]] = board_constants.EMPTY;
+
+                self.setState({data : board, highlighted_locs : null});
+            }
         }
     },
     render : function() {

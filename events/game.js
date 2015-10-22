@@ -1,6 +1,7 @@
 var constants = require('../constants.js').socket.events;
 var Game = require('../lib/game.js');
 var debug = require('debug')('checkers:events:game');
+var HumanPlayer = require('../lib/hplayer.js');
 
 function GameEvents() {}
 
@@ -23,7 +24,7 @@ GameEvents.prototype.new_game_handler = function(socket) {
     
     debug("new game created: ", gameId);
     
-    games.push(new Game());
+    games.push(new Game( { P1 : new HumanPlayer() } ));
 
     socket.join(constants.GAME_ID);
     socket.emit(constants.GAME_ID, gameId);
@@ -50,14 +51,26 @@ GameEvents.prototype.get_moves_handler = function(socket, data) {
     socket.emit(constants.AVAIL_MOVES, moves);
 }
 
+// TODO: hack - need better move planning than this
 GameEvents.prototype.make_move_handler = function(socket, data) {
+    var self = this;
     var gameId = data.game_id;
     var game = games[gameId];
+    var turn, nextMove;
     
     debug("applying a move ", data);
 
+    turn = game.turn();
     game.apply_move(data.move);
-    
     this.get_board_handler(socket, gameId);
+
+    nextMove = game.getNextPlayersMove();
+    
+    if(nextMove) {
+        setTimeout(function() {
+            data.move = nextMove;
+            self.make_move_handler(socket, data);
+        }, 500);
+    }
 }
 
