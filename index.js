@@ -13,13 +13,13 @@ global.games = [];
 // add a set of debug games - TODO: remove
 var utils = require('./lib/utils.js');
 var parseGameFileString = utils.parseGameFileString;
-for(var k = 1; k <= 10; k++) {
+for(var k = 1; k <= 1; k++) {
     var gamefile = "data/sampleCheckers" + k + ".txt";
     fs.readFile(gamefile, 'utf8', function(err, data) {
         if(err) console.error("Received an error while attempting to read file: ", { file : gamefile, err : err });
         else{
             var gameData = parseGameFileString(data);
-            games.push(new Game(gameData));
+            games.push(new Game(gameData, games.length));
         }
     });
 }

@@ -24,7 +24,9 @@ GameEvents.prototype.new_game_handler = function(socket) {
     
     debug("new game created: ", gameId);
     
-    games.push(new Game( { P1 : new HumanPlayer() } ));
+    // TODO: have AIs play for now
+    // games.push(new Game( { P1 : new HumanPlayer() } ));
+    games.push(new Game());
 
     socket.join(constants.GAME_ID);
     socket.emit(constants.GAME_ID, gameId);
